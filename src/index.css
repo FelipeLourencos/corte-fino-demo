@@ -1,0 +1,161 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/cormorant-garamond";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: 'Cormorant Garamond Variable', 'Times New Roman', serif;
+    --font-sans: 'Inter Variable', system-ui, sans-serif;
+    --color-gold: var(--gold);
+    --color-gold-soft: var(--gold-soft);
+    --color-forest: var(--forest);
+    --color-forest-deep: var(--forest-deep);
+    --color-graphite: var(--graphite);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    /* Corte Fino: verde noturno, preto fosco, grafite e ouro envelhecido */
+    --forest-deep: oklch(0.15 0.025 165);
+    --forest: oklch(0.22 0.04 160);
+    --graphite: oklch(0.2 0.006 160);
+    --gold: oklch(0.74 0.085 78);
+    --gold-soft: oklch(0.83 0.06 82);
+    --background: oklch(0.145 0.018 165);
+    --foreground: oklch(0.94 0.012 85);
+    --card: oklch(0.19 0.02 162 / 60%);
+    --card-foreground: oklch(0.94 0.012 85);
+    --popover: oklch(0.17 0.024 163 / 85%);
+    --popover-foreground: oklch(0.94 0.012 85);
+    --primary: var(--gold);
+    --primary-foreground: oklch(0.16 0.02 160);
+    --secondary: oklch(0.24 0.03 160);
+    --secondary-foreground: oklch(0.94 0.012 85);
+    --muted: oklch(0.25 0.025 160);
+    --muted-foreground: oklch(0.72 0.02 120);
+    --accent: oklch(0.26 0.035 160);
+    --accent-foreground: oklch(0.94 0.012 85);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(0.74 0.085 78 / 16%);
+    --input: oklch(1 0 0 / 12%);
+    --ring: oklch(0.74 0.085 78 / 70%);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --radius: 0.375rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+}
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply antialiased;
+    background-color: var(--background);
+    background-image:
+      radial-gradient(120% 60% at 50% -10%, oklch(0.24 0.045 160 / 70%), transparent 60%),
+      radial-gradient(80% 50% at 100% 100%, oklch(0.2 0.03 160 / 50%), transparent 70%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: oklch(0.74 0.085 78 / 35%);
+  }
+}
+
+/* Grão de filme sutil sobre toda a página: tira o aspecto "digital chapado" */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Texto em ouro escovado */
+.text-gold-foil {
+  background: linear-gradient(100deg, oklch(0.68 0.08 70), oklch(0.88 0.06 88) 45%, oklch(0.7 0.09 72) 70%, oklch(0.82 0.06 85));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Revelação ao rolar */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
