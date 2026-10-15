@@ -10,7 +10,7 @@ import {
   Scissors,
   Star,
 } from "lucide-react"
-import { MotionConfig, motion } from "framer-motion"
+import { MotionConfig, motion, useReducedMotion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 import { FadeUp, WordReveal } from "@/components/motion"
@@ -42,8 +42,10 @@ import {
 const unsplash = (id: string, w = 1600, extra = "") =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80${extra}`
 
+const HERO_VIDEO = "/videos/hero.mp4"
+const HERO_POSTER = "/videos/hero-poster.jpg"
+
 const IMG = {
-  hero: unsplash("1503951914875-452162b0f3f1", 2000),
   salao: unsplash("1585747860715-2ba37e788b70", 1400),
   cadeira: unsplash("1512690459411-b9245aed614b", 2000),
   ferramentas: unsplash("1621605815971-fbc98d665033", 1200),
@@ -353,18 +355,35 @@ const heroIn = (delay: number) => ({
 })
 
 function Hero() {
+  // Quem pediu menos movimento no sistema vê só a capa, e o vídeo nem é baixado
+  const reduceMotion = useReducedMotion()
+  const fundo = "absolute inset-0 -z-20 size-full object-cover object-[40%_50%]"
+
   return (
     <section id="topo" className="relative isolate flex min-h-svh items-end overflow-hidden">
-      {/* A foto "respira": começa um pouco mais próxima e se acomoda devagar */}
-      <motion.img
-        src={IMG.hero}
-        alt="Barbeiro fazendo a barba de um cliente na cadeira, em luz baixa"
-        className="absolute inset-0 -z-20 size-full object-cover object-[60%_30%]"
-        fetchPriority="high"
-        initial={{ scale: 1.15, opacity: 0 }}
-        animate={{ scale: 1.05, opacity: 1 }}
-        transition={{ duration: 2.4, ease: EASE_EDITORIAL }}
-      />
+      {reduceMotion ? (
+        <img
+          src={HERO_POSTER}
+          alt="Barbeiro cortando o cabelo de um cliente na cadeira, em luz baixa"
+          className={fundo}
+          fetchPriority="high"
+        />
+      ) : (
+        <motion.video
+          src={HERO_VIDEO}
+          poster={HERO_POSTER}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden
+          className={fundo}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.6, ease: EASE_EDITORIAL }}
+        />
+      )}
       <div
         aria-hidden
         className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,oklch(0.13_0.02_165/96%)_0%,oklch(0.15_0.03_162/80%)_45%,oklch(0.15_0.03_162/25%)_100%)]"
