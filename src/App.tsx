@@ -248,7 +248,7 @@ function Header() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    const onScroll = () => setScrolled(window.scrollY > 80)
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
@@ -259,16 +259,23 @@ function Header() {
       initial={{ opacity: 0, y: -24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, delay: 0.1, ease: EASE_EDITORIAL }}
-      className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6"
+      // No topo fica solto sobre o vídeo; depois de rolar vira uma faixa translúcida de ponta a ponta
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 isolate border-b transition-[background-color,border-color,backdrop-filter] duration-300 motion-reduce:transition-none",
+        scrolled
+          ? "border-gold/15 bg-forest-deep/75 backdrop-blur-xl"
+          : "border-transparent bg-transparent"
+      )}
     >
+      {/* Degradê sutil só para garantir a leitura sobre o vídeo, no lugar de uma caixa */}
       <div
+        aria-hidden
         className={cn(
-          "mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 rounded-md border px-4 transition-all duration-500 sm:px-6",
-          scrolled
-            ? "border-gold/15 bg-forest-deep/70 shadow-[0_20px_50px_-20px_black] backdrop-blur-xl"
-            : "border-white/5 bg-black/20 backdrop-blur-md"
+          "pointer-events-none absolute inset-x-0 top-0 -z-10 h-[160%] bg-linear-to-b from-black/40 to-transparent transition-opacity duration-300 motion-reduce:transition-none",
+          scrolled && "opacity-0"
         )}
-      >
+      />
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6 sm:h-20">
         <a href="#topo" className="flex items-baseline gap-2.5">
           <span className="font-heading text-2xl font-semibold tracking-wide text-foreground">
             Corte <span className="text-gold-foil italic">Fino</span>
@@ -334,7 +341,7 @@ function Header() {
         <div className="flex items-center gap-4">
           <a
             href="tel:+5511900000000"
-            className="hidden items-center gap-2 text-xs tracking-wide text-muted-foreground opacity-80 transition-[color,opacity] duration-500 hover:text-gold hover:opacity-100 md:flex"
+            className="hidden items-center gap-2 text-xs tracking-wide text-foreground/75 transition-colors duration-500 hover:text-gold md:flex"
           >
             <Phone className="size-3.5" /> (11) 90000-0000
           </a>
