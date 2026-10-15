@@ -756,7 +756,7 @@ function Agendar() {
           loading="lazy"
         />
         <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-forest-deep via-forest-deep/90 to-forest/50" />
-        <div className="grid gap-10 p-8 sm:p-14 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+        <div className="grid grid-cols-1 gap-10 p-6 sm:p-14 lg:grid-cols-[1.3fr_1fr] lg:items-center [&>*]:min-w-0">
           <div>
             <Eyebrow>Agenda da semana</Eyebrow>
             <h2 className="mt-6 font-heading text-4xl leading-tight sm:text-5xl">
@@ -776,7 +776,11 @@ function Agendar() {
                 <p className="text-muted-foreground">Domingo e segunda, fechado</p>
               </div>
             </div>
-            <GoldButton href="https://wa.me/5511900000000" className="w-full">
+            {/* No mobile o texto pode quebrar em duas linhas, com tracking menor, para não estourar o card */}
+            <GoldButton
+              href="https://wa.me/5511900000000"
+              className="h-auto min-h-12 w-full py-3 text-center tracking-[0.12em] whitespace-normal sm:h-12 sm:py-0 sm:tracking-[0.2em] sm:whitespace-nowrap"
+            >
               Agendar pelo WhatsApp <ArrowRight className="size-4" />
             </GoldButton>
           </div>
