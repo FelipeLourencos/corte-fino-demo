@@ -652,7 +652,7 @@ function Ritual() {
             <img
               src={IMG.tesoura}
               alt="Barbeiro aparando a barba de um cliente com tesoura, em preto e branco"
-              className="aspect-[16/10] w-full object-cover"
+              className="aspect-[4/3] w-full object-cover object-[center_30%] sm:aspect-[16/10] sm:object-center"
               loading="lazy"
             />
           </div>
