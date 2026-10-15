@@ -55,12 +55,13 @@
 }
 
 :root {
-    /* Corte Fino: verde noturno, preto fosco, grafite e ouro envelhecido */
-    --forest-deep: oklch(0.15 0.025 165);
-    --forest: oklch(0.22 0.04 160);
-    --graphite: oklch(0.2 0.006 160);
-    --gold: oklch(0.74 0.085 78);
-    --gold-soft: oklch(0.83 0.06 82);
+    /*
+     * As cores principais (--gold, --gold-soft, --forest, --forest-deep, --graphite)
+     * vêm de src/conteudo.ts e são aplicadas no carregamento (src/main.tsx).
+     * Os brilhos e sombras douradas abaixo são calculados a partir de --gold.
+     */
+    --gold-glow: oklch(from var(--gold) l c h / 60%);
+    --gold-glow-strong: oklch(from var(--gold) l c h / 75%);
     --background: oklch(0.145 0.018 165);
     --foreground: oklch(0.94 0.012 85);
     --card: oklch(0.19 0.02 162 / 60%);
@@ -76,9 +77,9 @@
     --accent: oklch(0.26 0.035 160);
     --accent-foreground: oklch(0.94 0.012 85);
     --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(0.74 0.085 78 / 16%);
+    --border: oklch(from var(--gold) l c h / 16%);
     --input: oklch(1 0 0 / 12%);
-    --ring: oklch(0.74 0.085 78 / 70%);
+    --ring: oklch(from var(--gold) l c h / 70%);
     --chart-1: oklch(0.87 0 0);
     --chart-2: oklch(0.556 0 0);
     --chart-3: oklch(0.439 0 0);
@@ -121,7 +122,7 @@
     background-attachment: fixed;
   }
   ::selection {
-    background: oklch(0.74 0.085 78 / 35%);
+    background: oklch(from var(--gold) l c h / 35%);
   }
 }
 
@@ -137,9 +138,15 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Texto em ouro escovado */
+/* Texto em ouro escovado: variações de brilho e tom em torno de --gold */
 .text-gold-foil {
-  background: linear-gradient(100deg, oklch(0.68 0.08 70), oklch(0.88 0.06 88) 45%, oklch(0.7 0.09 72) 70%, oklch(0.82 0.06 85));
+  background: linear-gradient(
+    100deg,
+    oklch(from var(--gold) calc(l - 0.06) calc(c - 0.005) calc(h - 8)),
+    oklch(from var(--gold) calc(l + 0.14) calc(c - 0.025) calc(h + 10)) 45%,
+    oklch(from var(--gold) calc(l - 0.04) calc(c + 0.005) calc(h - 6)) 70%,
+    oklch(from var(--gold) calc(l + 0.08) calc(c - 0.025) calc(h + 7))
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

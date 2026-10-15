@@ -15,6 +15,7 @@ import { MotionConfig, motion, useReducedMotion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { FadeUp, WordReveal } from "@/components/motion"
 import { EASE_EDITORIAL } from "@/lib/motion"
+import { conteudo, type TituloComDestaque } from "@/conteudo"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -39,134 +40,33 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 
-const unsplash = (id: string, w = 1600, extra = "") =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80${extra}`
+// Todo o texto, preço, contato e foto vem de src/conteudo.ts
+const {
+  negocio,
+  horarios,
+  diasFechados,
+  cabecalho,
+  topo,
+  casa,
+  servicos,
+  pacote,
+  ritual,
+  depoimentos,
+  agenda,
+  perguntas,
+  rodape,
+  midia,
+} = conteudo
 
-const HERO_VIDEO = "/videos/hero.mp4"
-const HERO_POSTER = "/videos/hero-poster.jpg"
-
-const IMG = {
-  salao: unsplash("1585747860715-2ba37e788b70", 1400),
-  cadeira: unsplash("1512690459411-b9245aed614b", 2000),
-  ferramentas: unsplash("1621605815971-fbc98d665033", 1200),
-  degrade: unsplash("1599351431202-1e0f0137899a", 1000),
-  barba: unsplash("1532710093739-9470acff878f", 1000),
-  visagismo: unsplash("1590540179852-2110a54f813a", 1000),
-  tesoura: unsplash("1517832606299-7ae9b720a186", 1200),
-  oficio: unsplash("1622286342621-4bd786c2447c", 1000),
-}
-
+/** Âncora interna: os botões de agendar levam até a seção de agenda. */
 const AGENDAR_URL = "#agendar"
+const TELEFONE_URL = `tel:+55${negocio.telefone.replace(/\D/g, "")}`
+const WHATSAPP_URL = `https://wa.me/${negocio.whatsapp}`
 
-const servicos = [
-  {
-    nome: "Corte degradê de alta precisão",
-    preco: "120",
-    duracao: "50 min",
-    imagem: IMG.degrade,
-    descricao:
-      "Antes de a máquina encostar, a gente lê o crescimento do seu cabelo e os redemoinhos. A transição é feita pente a pente, do zero ao dois, e a nuca e as costeletas fecham na navalha.",
-    inclui: ["Lavagem com shampoo de menta", "Acabamento à navalha", "Finalização com pomada seca"],
-  },
-  {
-    nome: "Barba com toalha quente e óleos essenciais",
-    preco: "95",
-    duracao: "40 min",
-    imagem: IMG.barba,
-    descricao:
-      "Três toalhas quentes amaciam o fio e abrem os poros. Espuma batida no pincel, lâmina nova a cada cliente e, para fechar, toalha fria com óleo de cedro e sândalo.",
-    inclui: ["Pré-barba com óleo de semente de uva", "Navalha com lâmina descartável", "Bálsamo pós-barba"],
-  },
-  {
-    nome: "Visagismo capilar",
-    preco: "180",
-    duracao: "75 min",
-    imagem: IMG.visagismo,
-    descricao:
-      "Para quem quer mudar e ainda não sabe para onde. Avaliamos formato do rosto, linha do maxilar, textura do fio e a sua rotina de manhã. Desenhamos corte e barba juntos e só depois executamos.",
-    inclui: ["Consulta com o barbeiro-chefe", "Corte e barba inclusos", "Guia de manutenção por escrito"],
-  },
-]
+const temDepoimentos = depoimentos.itens.length > 0
 
-const ritual = [
-  {
-    n: "01",
-    titulo: "Toalha quente",
-    texto: "Três trocas, cada uma a 60 °C, com algumas gotas de eucalipto. É aqui que o fio cede e o rosto relaxa.",
-  },
-  {
-    n: "02",
-    titulo: "Espuma no pincel",
-    texto: "Sabão de barbear batido à mão em pincel de texugo. A espuma levanta o pelo e protege a pele da lâmina.",
-  },
-  {
-    n: "03",
-    titulo: "Navalha a favor do pelo",
-    texto: "Primeira passada sempre no sentido do crescimento. A segunda só onde a pele permite, sem pressa.",
-  },
-  {
-    n: "04",
-    titulo: "Toalha fria e óleo",
-    texto: "Fecha os poros e assenta a pele. Terminamos com óleo de cedro e sândalo, que fica no rosto até o fim do dia.",
-  },
-]
-
-const depoimentos = [
-  {
-    nome: "Henrique Albuquerque",
-    cargo: "Advogado · cliente desde 2016",
-    foto: unsplash("1500648767791-00dcc994a43e", 240, "&h=240&crop=faces"),
-    texto:
-      "Corto com o Rafael há oito anos. Mudei de escritório duas vezes e de bairro uma, e continuo atravessando a cidade numa quinta à noite por causa daquela cadeira.",
-  },
-  {
-    nome: "Thiago Ventura",
-    cargo: "Arquiteto · cliente desde 2021",
-    foto: unsplash("1506794778202-cad84cf45f1d", 240, "&h=240&crop=faces"),
-    texto:
-      "Cheguei pedindo um degradê qualquer. Saí com um corte que respeita o redemoinho com que eu brigava desde os doze anos. Foi a primeira vez que alguém olhou para a minha cabeça antes de ligar a máquina.",
-  },
-  {
-    nome: "Daniel Okamoto",
-    cargo: "Chef de cozinha · cliente desde 2019",
-    foto: unsplash("1507003211169-0a1dd7228f2d", 240, "&h=240&crop=faces"),
-    texto:
-      "Passo catorze horas por dia numa cozinha quente. A barba com toalha quente de sábado é a única hora da semana em que eu desligo o telefone.",
-  },
-]
-
-const faq = [
-  {
-    q: "Preciso agendar ou posso chegar sem horário?",
-    a: "Trabalhamos com hora marcada para que cada atendimento tenha o tempo que precisa. Se houver uma cadeira livre quando você chegar, atendemos com prazer, mas aos sábados isso é raro.",
-  },
-  {
-    q: "E se eu me atrasar?",
-    a: "Seguramos o seu horário por até 10 minutos. Depois disso, tentamos encaixar no mesmo dia, mas não podemos atrasar o cliente seguinte.",
-  },
-  {
-    q: "Como cancelo ou remarco?",
-    a: "Pelo WhatsApp, com pelo menos 3 horas de antecedência. Remarcações dentro desse prazo não têm custo.",
-  },
-  {
-    q: "Vocês atendem crianças?",
-    a: "Sim, a partir de 8 anos e acompanhadas de um responsável. O corte infantil custa R$ 80 e dura cerca de 35 minutos.",
-  },
-  {
-    q: "Quais formas de pagamento vocês aceitam?",
-    a: "Pix, cartões de débito e crédito (todas as bandeiras) e dinheiro. O Ritual Corte Fino pode ser parcelado em até 2x sem juros.",
-  },
-  {
-    q: "Tem onde estacionar?",
-    a: "Temos convênio com o estacionamento da rua ao lado: as duas primeiras horas saem por nossa conta. É só mostrar o ticket no balcão.",
-  },
-]
-
-const navServicos = [
-  { titulo: "Corte degradê", detalhe: "Transição pente a pente, acabamento à navalha", href: "#servicos" },
-  { titulo: "Barba com toalha quente", detalhe: "Três toalhas, navalha e óleo de cedro", href: "#ritual" },
-  { titulo: "Visagismo capilar", detalhe: "Corte e barba desenhados para o seu rosto", href: "#servicos" },
-]
+const formatarPreco = (valor: number) => valor.toLocaleString("pt-BR")
+const numeroDoItem = (i: number) => String(i + 1).padStart(2, "0")
 
 function useReveal() {
   useEffect(() => {
@@ -200,6 +100,36 @@ function Eyebrow({ children, className }: { children: React.ReactNode; className
   )
 }
 
+/** Título com o trecho final em itálico dourado. */
+function ComDestaque({ titulo }: { titulo: TituloComDestaque }) {
+  return (
+    <>
+      {titulo.texto}
+      {titulo.destaque && (
+        <>
+          {" "}
+          <em className="text-gold-foil pr-[0.04em] font-normal">{titulo.destaque}</em>
+        </>
+      )}
+    </>
+  )
+}
+
+/** Nome da barbearia com a segunda parte em itálico dourado. */
+function Logo() {
+  return (
+    <>
+      {negocio.logo.texto}
+      {negocio.logo.destaque && (
+        <>
+          {" "}
+          <span className="text-gold-foil italic">{negocio.logo.destaque}</span>
+        </>
+      )}
+    </>
+  )
+}
+
 function GoldButton({
   href,
   children,
@@ -224,9 +154,9 @@ function GoldButton({
       className={cn(
         "group/gold relative h-12 overflow-hidden rounded-sm px-7 text-[0.8rem] font-semibold tracking-[0.2em] uppercase",
         "bg-linear-to-b from-gold-soft to-gold text-primary-foreground",
-        "shadow-[0_10px_30px_-10px_oklch(0.74_0.085_78/60%),inset_0_1px_0_oklch(1_0_0/35%)]",
+        "shadow-[0_10px_30px_-10px_var(--gold-glow),inset_0_1px_0_oklch(1_0_0/35%)]",
         // transition-all brigaria com o transform do Motion; animamos só o que o CSS controla
-        "transition-[translate,background-color,box-shadow,opacity] duration-500 hover:-translate-y-0.5 hover:bg-gold hover:shadow-[0_18px_40px_-12px_oklch(0.74_0.085_78/75%),inset_0_1px_0_oklch(1_0_0/45%)] active:translate-y-0",
+        "transition-[translate,background-color,box-shadow,opacity] duration-500 hover:-translate-y-0.5 hover:bg-gold hover:shadow-[0_18px_40px_-12px_var(--gold-glow-strong),inset_0_1px_0_oklch(1_0_0/45%)] active:translate-y-0",
         "before:absolute before:inset-y-0 before:-left-1/2 before:w-1/3 before:-skew-x-12 before:bg-white/30 before:blur-md before:transition-all before:duration-700 hover:before:left-[130%]",
         className
       )}
@@ -254,6 +184,9 @@ function Header() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
+  // Sem depoimentos, a seção some e o link para ela também
+  const links = cabecalho.links.filter(({ link }) => temDepoimentos || link !== "#depoimentos")
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -24 }}
@@ -278,10 +211,10 @@ function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6 sm:h-20">
         <a href="#topo" className="flex items-baseline gap-2.5">
           <span className="font-heading text-2xl font-semibold tracking-wide text-foreground">
-            Corte <span className="text-gold-foil italic">Fino</span>
+            <Logo />
           </span>
           <span className="hidden text-[0.6rem] tracking-[0.3em] text-muted-foreground uppercase sm:inline">
-            est. 2011
+            {cabecalho.selo}
           </span>
         </a>
 
@@ -294,18 +227,18 @@ function Header() {
                   "data-popup-open:bg-transparent data-popup-open:text-foreground data-popup-open:after:scale-x-100 data-popup-open:hover:bg-transparent"
                 )}
               >
-                Serviços
+                {cabecalho.menuServicos}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[380px] gap-1 p-2">
-                  {navServicos.map((s) => (
-                    <li key={s.titulo}>
+                  {servicos.itens.map(({ menu }) => (
+                    <li key={menu.titulo}>
                       <NavigationMenuLink
-                        href={s.href}
+                        href={menu.link ?? "#servicos"}
                         className="flex-col items-start gap-0.5 rounded-sm px-3 py-2.5 hover:bg-white/5"
                       >
-                        <span className="font-heading text-lg text-foreground">{s.titulo}</span>
-                        <span className="text-xs text-muted-foreground">{s.detalhe}</span>
+                        <span className="font-heading text-lg text-foreground">{menu.titulo}</span>
+                        <span className="text-xs text-muted-foreground">{menu.detalhe}</span>
                       </NavigationMenuLink>
                     </li>
                   ))}
@@ -314,24 +247,19 @@ function Header() {
                       href="#servicos"
                       className="justify-between rounded-sm px-3 py-2 text-xs tracking-[0.2em] text-gold uppercase hover:bg-white/5"
                     >
-                      Tabela completa de valores <ArrowRight className="size-3.5" />
+                      {cabecalho.menuVerTodos} <ArrowRight className="size-3.5" />
                     </NavigationMenuLink>
                   </li>
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
-            {[
-              ["A Casa", "#casa"],
-              ["O Ritual", "#ritual"],
-              ["Clientes", "#depoimentos"],
-              ["Dúvidas", "#duvidas"],
-            ].map(([label, href]) => (
-              <NavigationMenuItem key={href}>
+            {links.map(({ rotulo, link }) => (
+              <NavigationMenuItem key={link}>
                 <NavigationMenuLink
-                  href={href}
+                  href={link}
                   className={cn(navUnderline, "h-9 px-3")}
                 >
-                  {label}
+                  {rotulo}
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
@@ -340,13 +268,13 @@ function Header() {
 
         <div className="flex items-center gap-4">
           <a
-            href="tel:+5511900000000"
+            href={TELEFONE_URL}
             className="hidden items-center gap-2 text-xs tracking-wide text-foreground/75 transition-colors duration-500 hover:text-gold md:flex"
           >
-            <Phone className="size-3.5" /> (11) 90000-0000
+            <Phone className="size-3.5" /> {negocio.telefone}
           </a>
           <GoldButton href={AGENDAR_URL} className="h-10 px-5 text-[0.7rem]">
-            Agendar
+            {cabecalho.botaoAgendar}
           </GoldButton>
         </div>
       </div>
@@ -370,15 +298,15 @@ function Hero() {
     <section id="topo" className="relative isolate flex min-h-svh items-end overflow-hidden">
       {reduceMotion ? (
         <img
-          src={HERO_POSTER}
-          alt="Barbeiro cortando o cabelo de um cliente na cadeira, em luz baixa"
+          src={midia.capa.src}
+          alt={midia.capa.alt}
           className={fundo}
           fetchPriority="high"
         />
       ) : (
         <motion.video
-          src={HERO_VIDEO}
-          poster={HERO_POSTER}
+          src={midia.video}
+          poster={midia.capa.src}
           autoPlay
           muted
           loop
@@ -403,17 +331,21 @@ function Hero() {
       <div className="mx-auto w-full max-w-6xl px-6 pt-40 pb-20 sm:pb-28">
         <div className="max-w-2xl">
           <motion.div {...heroIn(0.25)}>
-            <Eyebrow>Pinheiros · São Paulo · desde 2011</Eyebrow>
+            <Eyebrow>{topo.chamada}</Eyebrow>
           </motion.div>
           <h1 className="mt-8 font-heading text-[2.9rem] leading-[0.95] font-medium tracking-[-0.02em] text-balance text-foreground sm:text-[4.75rem]">
             <WordReveal
               delay={0.45}
               segments={[
-                { text: "Cadeira de couro, navalha afiada e" },
-                {
-                  text: "tempo para fazer direito.",
-                  className: "text-gold-foil pr-[0.04em] font-normal italic",
-                },
+                { text: negocio.slogan.texto },
+                ...(negocio.slogan.destaque
+                  ? [
+                      {
+                        text: negocio.slogan.destaque,
+                        className: "text-gold-foil pr-[0.04em] font-normal italic",
+                      },
+                    ]
+                  : []),
               ]}
             />
           </h1>
@@ -421,42 +353,39 @@ function Hero() {
             {...heroIn(1.35)}
             className="mt-8 max-w-[34rem] text-base leading-[1.75] text-pretty text-foreground/75 sm:text-[1.075rem]"
           >
-            Aqui cada atendimento dura o que precisa durar. Degradê acertado fio a fio, barba feita
-            com toalha quente e uma conversa que ninguém tem pressa de terminar.
+            {topo.texto}
           </motion.p>
           <motion.div
             {...heroIn(1.5)}
             className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5"
           >
             <GoldButton href={AGENDAR_URL}>
-              Agendar meu horário
+              {topo.botaoPrincipal}
               <ArrowRight className="size-4 transition-transform duration-500 group-hover/gold:translate-x-1" />
             </GoldButton>
             <a
               href="#servicos"
               className="group text-sm tracking-[0.06em] text-foreground/80 transition-colors duration-500 hover:text-gold"
             >
-              Ver serviços e valores
+              {topo.linkSecundario}
               <span className="block h-px w-full origin-left scale-x-50 bg-gold/50 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
             </a>
           </motion.div>
         </div>
 
-        <motion.dl
-          {...heroIn(1.7)}
-          className="mt-20 grid max-w-3xl grid-cols-3 gap-px overflow-hidden rounded-md border border-white/10 bg-white/5 backdrop-blur-md"
-        >
-          {[
-            ["4.9", "nota média em 1.312 avaliações"],
-            ["45 min", "tempo mínimo por cliente"],
-            ["4", "barbeiros, nenhum aprendiz na cadeira"],
-          ].map(([n, l]) => (
-            <div key={l} className="bg-forest-deep/40 px-4 py-5 sm:px-6">
-              <dt className="font-heading text-2xl whitespace-nowrap text-gold sm:text-4xl">{n}</dt>
-              <dd className="mt-1 text-[0.7rem] leading-snug text-muted-foreground sm:text-xs">{l}</dd>
-            </div>
-          ))}
-        </motion.dl>
+        {topo.numeros.length > 0 && (
+          <motion.dl
+            {...heroIn(1.7)}
+            className="mt-20 grid max-w-3xl grid-cols-3 gap-px overflow-hidden rounded-md border border-white/10 bg-white/5 backdrop-blur-md"
+          >
+            {topo.numeros.map(({ valor, legenda }) => (
+              <div key={legenda} className="bg-forest-deep/40 px-4 py-5 sm:px-6">
+                <dt className="font-heading text-2xl whitespace-nowrap text-gold sm:text-4xl">{valor}</dt>
+                <dd className="mt-1 text-[0.7rem] leading-snug text-muted-foreground sm:text-xs">{legenda}</dd>
+              </div>
+            ))}
+          </motion.dl>
+        )}
       </div>
     </section>
   )
@@ -469,8 +398,8 @@ function Casa() {
         <FadeUp duration={1.2} className="relative">
           <div className="relative aspect-[4/5] overflow-hidden rounded-md shadow-[0_40px_80px_-30px_black]">
             <img
-              src={IMG.salao}
-              alt="Salão da barbearia com paredes de tijolo, três cadeiras de barbeiro e luminárias pendentes"
+              src={casa.fotoPrincipal.src}
+              alt={casa.fotoPrincipal.alt}
               className="size-full object-cover transition-transform duration-[1.6s] ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
               loading="lazy"
             />
@@ -481,8 +410,8 @@ function Casa() {
             className="absolute -right-4 -bottom-10 hidden w-56 overflow-hidden rounded-md border-4 border-background shadow-2xl shadow-black/60 sm:block lg:-right-12"
           >
             <img
-              src={IMG.ferramentas}
-              alt="Máquinas, tesoura, pente e pomada sobre bancada de madeira"
+              src={casa.fotoSecundaria.src}
+              alt={casa.fotoSecundaria.alt}
               className="aspect-square size-full object-cover"
               loading="lazy"
             />
@@ -491,39 +420,38 @@ function Casa() {
 
         <div>
           <FadeUp>
-            <Eyebrow>A casa</Eyebrow>
+            <Eyebrow>{casa.chamada}</Eyebrow>
           </FadeUp>
           <FadeUp delay={0.1}>
             <h2 className="mt-7 font-heading text-4xl leading-[1.05] tracking-[-0.015em] text-balance sm:text-[3.25rem]">
-              Aprendi o ofício varrendo cabelo no chão da barbearia do{" "}
-              <em className="text-gold-foil pr-[0.04em] font-normal">meu avô.</em>
+              <ComDestaque titulo={casa.titulo} />
             </h2>
           </FadeUp>
           <FadeUp
             delay={0.2}
             className="mt-9 max-w-[33rem] space-y-6 text-[1.02rem] leading-[1.8] text-pretty text-foreground/70"
           >
-            {/* Capitular: a primeira letra abre o texto como numa matéria de revista */}
-            <p className="first-letter:float-left first-letter:mt-1.5 first-letter:mr-3 first-letter:font-heading first-letter:text-[4.4rem] first-letter:leading-[0.78] first-letter:text-gold">
-              Seu Antônio abriu duas cadeiras em Santos em 1968. Eu tinha nove anos quando ele me
-              deixou segurar a navalha pela primeira vez, num pedaço de couro pendurado atrás da
-              porta. A lição daquele dia foi que o corte começa muito antes da tesoura: começa
-              quando você presta atenção em quem sentou na sua frente.
-            </p>
-            <p>
-              A Corte Fino nasceu em 2011 com essa regra. Agenda espaçada, toalhas trocadas a cada
-              cliente, lâmina nova em toda barba. Hoje somos quatro barbeiros e ainda atendemos na
-              mesma esquina de Pinheiros, em cadeiras Ferrante restauradas uma a uma.
-            </p>
+            {casa.paragrafos.map((paragrafo, i) => (
+              <p
+                key={i}
+                className={cn(
+                  // Capitular: a primeira letra abre o texto como numa matéria de revista
+                  i === 0 &&
+                    "first-letter:float-left first-letter:mt-1.5 first-letter:mr-3 first-letter:font-heading first-letter:text-[4.4rem] first-letter:leading-[0.78] first-letter:text-gold"
+                )}
+              >
+                {paragrafo}
+              </p>
+            ))}
           </FadeUp>
           <FadeUp delay={0.3} className="mt-12 flex items-center gap-4 border-t border-gold/15 pt-8">
             <div className="flex size-12 items-center justify-center rounded-full border border-gold/30 bg-forest">
               <Scissors className="size-5 text-gold" />
             </div>
             <div>
-              <p className="font-heading text-xl italic">Rafael Monteiro</p>
+              <p className="font-heading text-xl italic">{casa.assinatura.nome}</p>
               <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">
-                Fundador e barbeiro-chefe
+                {casa.assinatura.cargo}
               </p>
             </div>
           </FadeUp>
@@ -544,12 +472,11 @@ function Servicos() {
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-xl">
             <FadeUp>
-              <Eyebrow>Serviços e valores</Eyebrow>
+              <Eyebrow>{servicos.chamada}</Eyebrow>
             </FadeUp>
             <FadeUp delay={0.1}>
               <h2 className="mt-7 font-heading text-4xl leading-[1.05] tracking-[-0.015em] text-balance sm:text-[3.25rem]">
-                Três serviços. Todos feitos à mão,{" "}
-                <em className="text-gold-foil pr-[0.04em] font-normal">nenhum com cronômetro.</em>
+                <ComDestaque titulo={servicos.titulo} />
               </h2>
             </FadeUp>
           </div>
@@ -557,22 +484,19 @@ function Servicos() {
             delay={0.2}
             className="max-w-sm border-l border-gold/25 pl-5 text-sm leading-[1.75] text-pretty text-muted-foreground"
           >
-            <p>
-              Os valores incluem lavagem, toalha quente e finalização. Não cobramos à parte por
-              pigmentação de barba ou sobrancelha na navalha.
-            </p>
+            <p>{servicos.observacao}</p>
           </FadeUp>
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
-          {servicos.map((s, i) => (
+          {servicos.itens.map((s, i) => (
             <FadeUp key={s.nome} delay={i * 0.14} duration={1.1}>
               <Card
                 className="group/card-svc h-full gap-0 rounded-md border-0 bg-card py-0 ring-gold/12 backdrop-blur-xl transition-[translate,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-25px_black] hover:ring-gold/35"
               >
                 <div className="relative h-56 overflow-hidden">
                   <img
-                    src={s.imagem}
+                    src={s.foto}
                     alt={s.nome}
                     className="size-full object-cover grayscale-[35%] transition-[scale,filter] duration-[1.4s] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover/card-svc:scale-105 group-hover/card-svc:grayscale-0"
                     loading="lazy"
@@ -584,7 +508,7 @@ function Servicos() {
                 </div>
                 <CardHeader className="gap-3 px-6 pt-7">
                   <span className="font-heading text-sm text-gold/70 italic">
-                    Nº {String(i + 1).padStart(2, "0")}
+                    {servicos.prefixoNumero} {numeroDoItem(i)}
                   </span>
                   <CardTitle className="font-heading text-[1.7rem] leading-[1.1] font-medium tracking-[-0.01em] text-balance">
                     {s.nome}
@@ -605,15 +529,15 @@ function Servicos() {
                 </CardContent>
                 <CardFooter className="justify-between border-gold/12 bg-black/25 px-6 py-5">
                   <p className="font-heading text-foreground">
-                    <span className="align-top text-sm text-gold">R$</span>{" "}
-                    <span className="text-4xl">{s.preco}</span>
+                    <span className="align-top text-sm text-gold">{negocio.moeda}</span>{" "}
+                    <span className="text-4xl">{formatarPreco(s.preco)}</span>
                   </p>
                   <motion.a
                     href={AGENDAR_URL}
                     whileTap={{ scale: 0.95 }}
                     className="group/res relative flex items-center gap-1.5 py-1 text-xs tracking-[0.2em] text-gold uppercase opacity-85 transition-opacity duration-500 hover:opacity-100"
                   >
-                    Reservar
+                    {servicos.botaoReservar}
                     <ArrowUpRight className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/res:translate-x-0.5 group-hover/res:-translate-y-0.5" />
                     <span
                       aria-hidden
@@ -626,35 +550,37 @@ function Servicos() {
           ))}
         </div>
 
-        <FadeUp delay={0.1} className="mt-6">
-          <Card className="rounded-md border-0 bg-linear-to-r from-forest/80 via-card to-forest/60 py-0 ring-gold/30 backdrop-blur-xl">
-            <div className="grid items-center gap-8 p-8 md:grid-cols-[1fr_auto] md:p-10">
-              <div>
-                <p className="text-[0.65rem] tracking-[0.3em] text-gold uppercase">
-                  O mais pedido aos sábados
-                </p>
-                <CardTitle className="mt-3 font-heading text-3xl font-medium sm:text-4xl">
-                  Ritual Corte Fino
-                </CardTitle>
-                <CardDescription className="mt-3 max-w-2xl leading-relaxed text-foreground/70">
-                  Corte degradê, barba completa com toalha quente, limpeza de pele com argila verde e
-                  massagem de couro cabeludo. Noventa minutos, acompanhados de um café coado na hora
-                  ou uma dose de bourbon.
-                </CardDescription>
+        {pacote && (
+          <FadeUp delay={0.1} className="mt-6">
+            <Card className="rounded-md border-0 bg-linear-to-r from-forest/80 via-card to-forest/60 py-0 ring-gold/30 backdrop-blur-xl">
+              <div className="grid items-center gap-8 p-8 md:grid-cols-[1fr_auto] md:p-10">
+                <div>
+                  <p className="text-[0.65rem] tracking-[0.3em] text-gold uppercase">
+                    {pacote.chamada}
+                  </p>
+                  <CardTitle className="mt-3 font-heading text-3xl font-medium sm:text-4xl">
+                    {pacote.nome}
+                  </CardTitle>
+                  <CardDescription className="mt-3 max-w-2xl leading-relaxed text-foreground/70">
+                    {pacote.descricao}
+                  </CardDescription>
+                </div>
+                <div className="flex flex-col items-start gap-4 md:items-end">
+                  <p className="font-heading">
+                    {pacote.precoAntigo !== undefined && (
+                      <span className="mr-2 text-lg text-muted-foreground line-through decoration-gold/50">
+                        {negocio.moeda} {formatarPreco(pacote.precoAntigo)}
+                      </span>
+                    )}
+                    <span className="align-top text-sm text-gold">{negocio.moeda}</span>{" "}
+                    <span className="text-5xl">{formatarPreco(pacote.preco)}</span>
+                  </p>
+                  <GoldButton href={AGENDAR_URL}>{pacote.botao}</GoldButton>
+                </div>
               </div>
-              <div className="flex flex-col items-start gap-4 md:items-end">
-                <p className="font-heading">
-                  <span className="mr-2 text-lg text-muted-foreground line-through decoration-gold/50">
-                    R$ 215
-                  </span>
-                  <span className="align-top text-sm text-gold">R$</span>{" "}
-                  <span className="text-5xl">195</span>
-                </p>
-                <GoldButton href={AGENDAR_URL}>Reservar o ritual</GoldButton>
-              </div>
-            </div>
-          </Card>
-        </FadeUp>
+            </Card>
+          </FadeUp>
+        )}
       </div>
     </section>
   )
@@ -665,19 +591,17 @@ function Ritual() {
     <section id="ritual" className="mx-auto max-w-6xl px-6 py-28 sm:py-36">
       <div className="grid gap-16 lg:grid-cols-2">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <Eyebrow className="reveal">O ritual da barba</Eyebrow>
+          <Eyebrow className="reveal">{ritual.chamada}</Eyebrow>
           <h2 className="reveal mt-6 font-heading text-4xl leading-tight sm:text-5xl">
-            Quarenta minutos que o seu rosto vai sentir até a noite.
+            {ritual.titulo}
           </h2>
           <p className="reveal mt-6 max-w-md leading-relaxed text-foreground/70">
-            A barba com toalha quente é o serviço que mais nos ensinou paciência. Não existe atalho:
-            pele mal preparada irrita, e lâmina com pressa corta. Por isso ela segue sempre os mesmos
-            quatro tempos.
+            {ritual.texto}
           </p>
           <div className="reveal mt-10 overflow-hidden rounded-md shadow-[0_40px_80px_-30px_black]">
             <img
-              src={IMG.tesoura}
-              alt="Barbeiro aparando a barba de um cliente com tesoura, em preto e branco"
+              src={ritual.foto.src}
+              alt={ritual.foto.alt}
               className="aspect-[4/3] w-full object-cover object-[center_30%] sm:aspect-[16/10] sm:object-center"
               loading="lazy"
             />
@@ -689,18 +613,18 @@ function Ritual() {
             aria-hidden
             className="absolute top-0 bottom-0 left-[1.6rem] w-px bg-linear-to-b from-transparent via-gold/30 to-transparent lg:top-24"
           />
-          {ritual.map((r, i) => (
+          {ritual.passos.map((passo, i) => (
             <li
-              key={r.n}
+              key={passo.titulo}
               className="reveal relative flex gap-6 rounded-md border border-white/5 bg-white/[0.03] p-6 backdrop-blur-md transition-colors duration-500 hover:border-gold/25 hover:bg-white/[0.05]"
               style={{ transitionDelay: `${i * 80}ms` }}
             >
               <span className="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full border border-gold/40 bg-background font-heading text-sm text-gold">
-                {r.n}
+                {numeroDoItem(i)}
               </span>
               <div>
-                <h3 className="font-heading text-2xl">{r.titulo}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{r.texto}</p>
+                <h3 className="font-heading text-2xl">{passo.titulo}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{passo.texto}</p>
               </div>
             </li>
           ))}
@@ -711,10 +635,12 @@ function Ritual() {
 }
 
 function Depoimentos() {
+  if (!temDepoimentos) return null
+
   return (
     <section id="depoimentos" className="relative overflow-hidden py-28 sm:py-36">
       <img
-        src={IMG.cadeira}
+        src={depoimentos.fotoFundo}
         alt=""
         aria-hidden
         className="absolute inset-0 -z-20 size-full object-cover opacity-30"
@@ -724,14 +650,14 @@ function Depoimentos() {
 
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <Eyebrow className="reveal justify-center">Quem senta na cadeira</Eyebrow>
+          <Eyebrow className="reveal justify-center">{depoimentos.chamada}</Eyebrow>
           <h2 className="reveal mt-6 font-heading text-4xl leading-tight sm:text-5xl">
-            Sete em cada dez clientes voltam no mês seguinte.
+            {depoimentos.titulo}
           </h2>
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
-          {depoimentos.map((d, i) => (
+          {depoimentos.itens.map((d, i) => (
             <Card
               key={d.nome}
               className="reveal justify-between gap-8 rounded-md bg-forest-deep/45 px-0 py-8 ring-white/10 backdrop-blur-xl transition-all duration-500 hover:ring-gold/30"
@@ -740,7 +666,7 @@ function Depoimentos() {
               <CardContent className="px-7">
                 <div className="flex items-center justify-between">
                   <Quote className="size-7 text-gold/60" />
-                  <div className="flex gap-0.5" aria-label="5 de 5 estrelas">
+                  <div className="flex gap-0.5" aria-label={depoimentos.rotuloEstrelas}>
                     {Array.from({ length: 5 }).map((_, k) => (
                       <Star key={k} className="size-3.5 fill-gold text-gold" />
                     ))}
@@ -759,7 +685,7 @@ function Depoimentos() {
                 />
                 <div>
                   <p className="text-sm font-medium">{d.nome}</p>
-                  <p className="text-xs text-muted-foreground">{d.cargo}</p>
+                  <p className="text-xs text-muted-foreground">{d.descricao}</p>
                 </div>
               </div>
             </Card>
@@ -775,7 +701,7 @@ function Agendar() {
     <section id="agendar" className="mx-auto max-w-6xl px-6 pb-28">
       <div className="reveal relative overflow-hidden rounded-md border border-gold/20 shadow-[0_50px_100px_-40px_black]">
         <img
-          src={IMG.oficio}
+          src={agenda.fotoFundo}
           alt=""
           aria-hidden
           className="absolute inset-0 -z-20 size-full object-cover"
@@ -784,30 +710,30 @@ function Agendar() {
         <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-forest-deep via-forest-deep/90 to-forest/50" />
         <div className="grid grid-cols-1 gap-10 p-6 sm:p-14 lg:grid-cols-[1.3fr_1fr] lg:items-center [&>*]:min-w-0">
           <div>
-            <Eyebrow>Agenda da semana</Eyebrow>
+            <Eyebrow>{agenda.chamada}</Eyebrow>
             <h2 className="mt-6 font-heading text-4xl leading-tight sm:text-5xl">
-              Quinta e sexta à noite lotam primeiro.
+              {agenda.titulo}
             </h2>
             <p className="mt-5 max-w-lg leading-relaxed text-foreground/75">
-              Escolha o barbeiro, o serviço e o horário em menos de um minuto. Você recebe a
-              confirmação no WhatsApp e um lembrete na véspera.
+              {agenda.texto}
             </p>
           </div>
           <div className="flex flex-col gap-4 rounded-md border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
             <div className="flex items-start gap-3 text-sm">
               <Clock className="mt-0.5 size-4 text-gold" />
               <div className="text-foreground/80">
-                <p>Terça a sexta, 10h às 21h</p>
-                <p>Sábado, 9h às 18h</p>
-                <p className="text-muted-foreground">Domingo e segunda, fechado</p>
+                {horarios.map((h) => (
+                  <p key={h.dias}>{`${h.dias}, ${h.horas}`}</p>
+                ))}
+                {diasFechados && <p className="text-muted-foreground">{diasFechados}</p>}
               </div>
             </div>
             {/* No mobile o texto pode quebrar em duas linhas, com tracking menor, para não estourar o card */}
             <GoldButton
-              href="https://wa.me/5511900000000"
+              href={WHATSAPP_URL}
               className="h-auto min-h-12 w-full py-3 text-center tracking-[0.12em] whitespace-normal sm:h-12 sm:py-0 sm:tracking-[0.2em] sm:whitespace-nowrap"
             >
-              Agendar pelo WhatsApp <ArrowRight className="size-4" />
+              {agenda.botao} <ArrowRight className="size-4" />
             </GoldButton>
           </div>
         </div>
@@ -817,28 +743,36 @@ function Agendar() {
 }
 
 function Footer() {
+  const endereco = (
+    <>
+      <MapPin className="mt-0.5 size-4 shrink-0" />
+      {negocio.endereco.linha1}
+      <br />
+      {negocio.endereco.linha2}
+    </>
+  )
+
   return (
     <footer id="duvidas" className="border-t border-gold/10 bg-[oklch(0.12_0.012_165)]">
       <div className="mx-auto grid max-w-6xl gap-16 px-6 py-24 lg:grid-cols-[1fr_1.4fr]">
         <div>
-          <Eyebrow className="reveal">Dúvidas frequentes</Eyebrow>
+          <Eyebrow className="reveal">{perguntas.chamada}</Eyebrow>
           <h2 className="reveal mt-6 font-heading text-4xl leading-tight">
-            O que costumam perguntar antes da primeira visita.
+            {perguntas.titulo}
           </h2>
           <p className="reveal mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Não encontrou a sua? Mande uma mensagem. Quem responde é a Juliana, da recepção, quase
-            sempre em menos de uma hora.
+            {perguntas.texto}
           </p>
         </div>
 
         <Accordion className="reveal" defaultValue={["faq-0"]}>
-          {faq.map((item, i) => (
-            <AccordionItem key={item.q} value={`faq-${i}`} className="border-gold/12 not-last:border-b">
+          {perguntas.itens.map((item, i) => (
+            <AccordionItem key={item.pergunta} value={`faq-${i}`} className="border-gold/12 not-last:border-b">
               <AccordionTrigger className="py-5 font-heading text-xl font-normal hover:text-gold hover:no-underline sm:text-[1.35rem] **:data-[slot=accordion-trigger-icon]:text-gold">
-                {item.q}
+                {item.pergunta}
               </AccordionTrigger>
               <AccordionContent className="pb-6 text-[0.95rem] leading-relaxed text-muted-foreground">
-                <p>{item.a}</p>
+                <p>{item.resposta}</p>
               </AccordionContent>
             </AccordionItem>
           ))}
@@ -849,38 +783,49 @@ function Footer() {
         <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="font-heading text-3xl">
-              Corte <span className="text-gold-foil italic">Fino</span>
+              <Logo />
             </p>
-            <p className="mt-3 text-sm text-muted-foreground">Barbearia desde 2011.</p>
+            <p className="mt-3 text-sm text-muted-foreground">{rodape.descricao}</p>
           </div>
           <div className="text-sm text-muted-foreground">
-            <p className="mb-3 text-[0.65rem] tracking-[0.3em] text-gold uppercase">Endereço</p>
-            <p className="flex gap-2">
-              <MapPin className="mt-0.5 size-4 shrink-0" />
-              Rua dos Pinheiros, 1.240
-              <br />
-              Pinheiros, São Paulo
-            </p>
+            <p className="mb-3 text-[0.65rem] tracking-[0.3em] text-gold uppercase">{rodape.tituloEndereco}</p>
+            {negocio.linkMapa ? (
+              <a
+                href={negocio.linkMapa}
+                target="_blank"
+                rel="noreferrer"
+                className="flex gap-2 transition-colors hover:text-gold"
+              >
+                {endereco}
+              </a>
+            ) : (
+              <p className="flex gap-2">{endereco}</p>
+            )}
           </div>
           <div className="text-sm text-muted-foreground">
-            <p className="mb-3 text-[0.65rem] tracking-[0.3em] text-gold uppercase">Horários</p>
-            <p>Ter a sex · 10h às 21h</p>
-            <p>Sáb · 9h às 18h</p>
+            <p className="mb-3 text-[0.65rem] tracking-[0.3em] text-gold uppercase">{rodape.tituloHorarios}</p>
+            {horarios.map((h) => (
+              <p key={h.dias}>{`${h.diasAbreviados} · ${h.horas}`}</p>
+            ))}
           </div>
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p className="mb-3 text-[0.65rem] tracking-[0.3em] text-gold uppercase">Contato</p>
-            <a href="tel:+5511900000000" className="flex items-center gap-2 transition-colors hover:text-gold">
-              <Phone className="size-4" /> (11) 90000-0000
+            <p className="mb-3 text-[0.65rem] tracking-[0.3em] text-gold uppercase">{rodape.tituloContato}</p>
+            <a href={TELEFONE_URL} className="flex items-center gap-2 transition-colors hover:text-gold">
+              <Phone className="size-4" /> {negocio.telefone}
             </a>
-            <a href="#" className="flex items-center gap-2 transition-colors hover:text-gold">
-              <AtSign className="size-4" /> cortefino.barbearia
+            <a href={negocio.instagram.link} className="flex items-center gap-2 transition-colors hover:text-gold">
+              <AtSign className="size-4" /> {negocio.instagram.usuario}
             </a>
           </div>
         </div>
         <p className="mx-auto max-w-6xl px-6 pb-10 text-xs text-muted-foreground/60">
-          © {new Date().getFullYear()} Corte Fino Barbearia. Fotografias: Unsplash.
-          <br />
-          Site de demonstração. Negócio, avaliações e depoimentos fictícios.
+          © {new Date().getFullYear()} {rodape.direitos}
+          {rodape.avisoDemonstracao && (
+            <>
+              <br />
+              {rodape.avisoDemonstracao}
+            </>
+          )}
         </p>
       </div>
     </footer>
